@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Container, Typography, Paper } from '@material-ui/core';
 
-function VehicleDashboard() {
+function VehicleDashboardView() {
   return (
     <Box py={3}>
       <Container maxWidth="lg">
@@ -18,4 +18,4 @@ function VehicleDashboard() {
   );
 }
 
-export default VehicleDashboard;
+export default VehicleDashboardView;

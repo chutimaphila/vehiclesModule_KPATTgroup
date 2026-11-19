@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Container, Typography, Paper, Button } from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
 
-function InspectionHistory() {
+function InspectionHistoryView() {
   return (
     <Box py={3}>
       <Container maxWidth="lg">
@@ -19,7 +19,7 @@ function InspectionHistory() {
             component={RouterLink}
             to="/app/vehicles/history/INS-001"
           >
-            ดูตัวอย่างรายละเอียด (INS-001)
+            เทสหน้ารายละเอียดใบตรวจ (INS-001)
           </Button>
         </Paper>
       </Container>
@@ -27,4 +27,4 @@ function InspectionHistory() {
   );
 }
 
-export default InspectionHistory;
+export default InspectionHistoryView;

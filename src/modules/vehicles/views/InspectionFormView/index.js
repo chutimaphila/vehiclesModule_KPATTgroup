@@ -1,8 +1,8 @@
 import React from 'react';
-import { Box, Container, Typography, Paper } from '@material-ui/core';
-import { useParams } from 'react-router-dom';
+import { Box, Container, Typography, Paper, Button } from '@material-ui/core';
+import { useParams, Link as RouterLink } from 'react-router-dom';
 
-function InspectionForm() {
+function InspectionFormView() {
   const { inspectionId } = useParams();
 
   return (
@@ -12,16 +12,23 @@ function InspectionForm() {
           <Typography variant="h4" gutterBottom>
             Hello World - ฟอร์มบันทึกการตรวจเช็คยานพาหนะ (Inspection Form)
           </Typography>
-          <Typography variant="body1" color="textSecondary">
+          <Typography variant="body1" color="textSecondary" paragraph>
             โหมด:{' '}
             {inspectionId
               ? `แก้ไขใบตรวจรหัส ${inspectionId}`
               : 'สร้างใบตรวจใหม่'}
           </Typography>
+          <Button
+            variant="outlined"
+            component={RouterLink}
+            to="/app/vehicles/inspections"
+          >
+            กลับหน้ารายการตรวจ
+          </Button>
         </Paper>
       </Container>
     </Box>
   );
 }
 
-export default InspectionForm;
+export default InspectionFormView;

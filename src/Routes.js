@@ -8,126 +8,18 @@ import HomeView from 'src/views/pages/HomeView';
 import LoadingScreen from 'src/components/LoadingScreen';
 import AuthGuard from 'src/components/AuthGuard';
 import GuestGuard from 'src/components/GuestGuard';
+import vehicleRoutes from 'src/modules/vehicles/routes';
 
-const routesConfig = [
-  {
-    exact: true,
-    path: '/',
-    component: () => <Redirect to="/home" />
-  },
-  {
-    exact: true,
-    path: '/404',
-    component: lazy(() => import('src/views/pages/Error404View'))
-  },
-  {
-    exact: true,
-    guard: GuestGuard,
-    path: '/login',
-    component: lazy(() => import('src/views/auth/LoginView'))
-  },
-  {
-    exact: true,
-    path: '/login-unprotected',
-    component: lazy(() => import('src/views/auth/LoginView'))
-  },
-  {
-    exact: true,
-    guard: GuestGuard,
-    path: '/register',
-    component: lazy(() => import('src/views/auth/RegisterView'))
-  },
-  {
-    exact: true,
-    path: '/register-unprotected',
-    component: lazy(() => import('src/views/auth/RegisterView'))
-  },
-  {
-    path: '/app',
-    guard: AuthGuard,
-    layout: DashboardLayout,
-    routes: [
-      // ==========================================
-      // ระบบตรวจเช็คยานพาหนะ (Vehicle Inspection)
-      // ==========================================
-      {
-        exact: true,
-        path: '/app/vehicles',
-        component: () => <Redirect to="/app/vehicles/dashboard" />
-      },
-      {
-        exact: true,
-        path: '/app/vehicles/dashboard',
-        component: lazy(() =>
-          import('src/modules/vehicleInspection/pages/VehicleDashboard')
-        )
-      },
-      // 1. ทะเบียนยานพาหนะ
-      {
-        exact: true,
-        path: '/app/vehicles/list',
-        component: lazy(() =>
-          import('src/modules/vehicleInspection/pages/VehicleList')
-        )
-      },
-      // 2. เช็คยานพาหนะ (หน้ารายการตรวจ & หน้าฟอร์มบันทึกผลตรวจ)
-      {
-        exact: true,
-        path: '/app/vehicles/inspections',
-        component: lazy(() =>
-          import('src/modules/vehicleInspection/pages/InspectionList')
-        )
-      },
-      {
-        exact: true,
-        path: '/app/vehicles/inspections/create',
-        component: lazy(() =>
-          import('src/modules/vehicleInspection/pages/InspectionForm')
-        )
-      },
-      {
-        exact: true,
-        path: '/app/vehicles/inspections/:inspectionId/edit',
-        component: lazy(() =>
-          import('src/modules/vehicleInspection/pages/InspectionForm')
-        )
-      },
-      // 3. รายการแก้ไข (ติดตามข้อบกพร่อง / นัดตรวจซ้ำ)
-      {
-        exact: true,
-        path: '/app/vehicles/defects',
-        component: lazy(() =>
-          import('src/modules/vehicleInspection/pages/DefectList')
-        )
-      },
-      // 4. ประวัติการตรวจเช็ค (หน้ารายการประวัติ & หน้ารายละเอียดใบตรวจ)
-      {
-        exact: true,
-        path: '/app/vehicles/history',
-        component: lazy(() =>
-          import('src/modules/vehicleInspection/pages/InspectionHistory')
-        )
-      },
-      {
-        exact: true,
-        path: '/app/vehicles/history/:inspectionId',
-        component: lazy(() =>
-          import('src/modules/vehicleInspection/pages/InspectionDetails')
-        )
-      },
-      // 5. การส่งออกเอกสาร (รายงาน PDF / Excel / ลงนามเอกสาร)
-      {
-        exact: true,
-        path: '/app/vehicles/documents',
-        component: lazy(() =>
-          import('src/modules/vehicleInspection/pages/DocumentExport')
-        )
-      },
-      {
-        exact: true,
-        path: '/app',
-        component: () => <Redirect to="/app/reports/dashboard" />
-      },
+// เปิดแสดงหน้าตัวอย่างของ Template เป็นค่าเริ่มต้นตอน Dev
+// และปิดอัตโนมัติเมื่อตั้งค่า REACT_APP_ENABLE_TEMPLATE_DEMO=false ตอน Build Production
+const isTemplateDemoEnabled =
+  process.env.REACT_APP_ENABLE_TEMPLATE_DEMO !== 'false';
+
+// ============================================================================
+// 1. TEMPLATE DEMO ROUTES (เก็บไว้ดูเป็นตัวอย่างระหว่างพัฒนาเท่านั้น)
+// ============================================================================
+const templateDemoAppRoutes = isTemplateDemoEnabled
+  ? [
       {
         exact: true,
         path: '/app/account',
@@ -299,117 +191,182 @@ const routesConfig = [
         exact: true,
         path: '/app/extra/editors/quill',
         component: lazy(() => import('src/views/extra/editors/QuillEditorView'))
-      },
-      {
-        exact: true,
-        path: '/app/vehicles/list',
-        component: lazy(() =>
-          import('src/modules/vehicleInspection/pages/VehicleList')
-        )
-      },
-      {
-        component: () => <Redirect to="/404" />
       }
     ]
-  },
-  {
-    path: '/docs',
-    layout: DocsLayout,
-    routes: [
+  : [];
+
+const templateDocsRoutes = isTemplateDemoEnabled
+  ? [
       {
-        exact: true,
         path: '/docs',
-        component: () => <Redirect to="/docs/welcome" />
-      },
+        layout: DocsLayout,
+        routes: [
+          {
+            exact: true,
+            path: '/docs',
+            component: () => <Redirect to="/docs/welcome" />
+          },
+          {
+            exact: true,
+            path: '/docs/welcome',
+            component: lazy(() => import('src/views/docs/WelcomeView'))
+          },
+          {
+            exact: true,
+            path: '/docs/getting-started',
+            component: lazy(() => import('src/views/docs/GettingStartedView'))
+          },
+          {
+            exact: true,
+            path: '/docs/environment-variables',
+            component: lazy(() =>
+              import('src/views/docs/EnvironmentVariablesView')
+            )
+          },
+          {
+            exact: true,
+            path: '/docs/deployment',
+            component: lazy(() => import('src/views/docs/DeploymentView'))
+          },
+          {
+            exact: true,
+            path: '/docs/api-calls',
+            component: lazy(() => import('src/views/docs/ApiCallsView'))
+          },
+          {
+            exact: true,
+            path: '/docs/analytics',
+            component: lazy(() => import('src/views/docs/AnalyticsView'))
+          },
+          {
+            exact: true,
+            path: '/docs/authentication',
+            component: lazy(() => import('src/views/docs/AuthenticationView'))
+          },
+          {
+            exact: true,
+            path: '/docs/routing',
+            component: lazy(() => import('src/views/docs/RoutingView'))
+          },
+          {
+            exact: true,
+            path: '/docs/settings',
+            component: lazy(() => import('src/views/docs/SettingsView'))
+          },
+          {
+            exact: true,
+            path: '/docs/state-management',
+            component: lazy(() => import('src/views/docs/StateManagementView'))
+          },
+          {
+            exact: true,
+            path: '/docs/theming',
+            component: lazy(() => import('src/views/docs/ThemingView'))
+          },
+          {
+            exact: true,
+            path: '/docs/support',
+            component: lazy(() => import('src/views/docs/SupportView'))
+          },
+          {
+            exact: true,
+            path: '/docs/changelog',
+            component: lazy(() => import('src/views/docs/ChangelogView'))
+          },
+          {
+            component: () => <Redirect to="/404" />
+          }
+        ]
+      }
+    ]
+  : [];
+
+const templateLandingRoutes = isTemplateDemoEnabled
+  ? [
+      {
+        path: '*',
+        layout: MainLayout,
+        routes: [
+          {
+            exact: true,
+            path: '/home',
+            component: HomeView
+          },
+          {
+            exact: true,
+            path: '/pricing',
+            component: lazy(() => import('src/views/pages/PricingView'))
+          },
+          {
+            component: () => <Redirect to="/404" />
+          }
+        ]
+      }
+    ]
+  : [
+      {
+        component: () => <Redirect to="/404" />
+      }
+    ];
+
+// ============================================================================
+// 2. MAIN ROUTES CONFIGURATION (ระบบจริง + โหมดสลับ Template)
+// ============================================================================
+const routesConfig = [
+  {
+    exact: true,
+    path: '/',
+    // หน้าแรกสุดชี้ไปที่ระบบตรวจเช็คยานพาหนะโดยตรง (หากยังไม่ Login จะถูก AuthGuard ส่งไป /login)
+    component: () => <Redirect to="/app/vehicles/dashboard" />
+  },
+  {
+    exact: true,
+    path: '/404',
+    component: lazy(() => import('src/views/pages/Error404View'))
+  },
+  {
+    exact: true,
+    guard: GuestGuard,
+    path: '/login',
+    component: lazy(() => import('src/views/auth/LoginView'))
+  },
+  {
+    exact: true,
+    path: '/login-unprotected',
+    component: lazy(() => import('src/views/auth/LoginView'))
+  },
+  {
+    exact: true,
+    guard: GuestGuard,
+    path: '/register',
+    component: lazy(() => import('src/views/auth/RegisterView'))
+  },
+  {
+    exact: true,
+    path: '/register-unprotected',
+    component: lazy(() => import('src/views/auth/RegisterView'))
+  },
+  {
+    path: '/app',
+    guard: AuthGuard,
+    layout: DashboardLayout,
+    routes: [
       {
         exact: true,
-        path: '/docs/welcome',
-        component: lazy(() => import('src/views/docs/WelcomeView'))
+        path: '/app',
+        component: () => <Redirect to="/app/vehicles/dashboard" />
       },
-      {
-        exact: true,
-        path: '/docs/getting-started',
-        component: lazy(() => import('src/views/docs/GettingStartedView'))
-      },
-      {
-        exact: true,
-        path: '/docs/environment-variables',
-        component: lazy(() => import('src/views/docs/EnvironmentVariablesView'))
-      },
-      {
-        exact: true,
-        path: '/docs/deployment',
-        component: lazy(() => import('src/views/docs/DeploymentView'))
-      },
-      {
-        exact: true,
-        path: '/docs/api-calls',
-        component: lazy(() => import('src/views/docs/ApiCallsView'))
-      },
-      {
-        exact: true,
-        path: '/docs/analytics',
-        component: lazy(() => import('src/views/docs/AnalyticsView'))
-      },
-      {
-        exact: true,
-        path: '/docs/authentication',
-        component: lazy(() => import('src/views/docs/AuthenticationView'))
-      },
-      {
-        exact: true,
-        path: '/docs/routing',
-        component: lazy(() => import('src/views/docs/RoutingView'))
-      },
-      {
-        exact: true,
-        path: '/docs/settings',
-        component: lazy(() => import('src/views/docs/SettingsView'))
-      },
-      {
-        exact: true,
-        path: '/docs/state-management',
-        component: lazy(() => import('src/views/docs/StateManagementView'))
-      },
-      {
-        exact: true,
-        path: '/docs/theming',
-        component: lazy(() => import('src/views/docs/ThemingView'))
-      },
-      {
-        exact: true,
-        path: '/docs/support',
-        component: lazy(() => import('src/views/docs/SupportView'))
-      },
-      {
-        exact: true,
-        path: '/docs/changelog',
-        component: lazy(() => import('src/views/docs/ChangelogView'))
-      },
+      // โมดูลระบบตรวจเช็คยานพาหนะ (Production Module)
+      ...vehicleRoutes,
+      // หน้าตัวอย่างของ Template (ทำงานเฉพาะตอน isTemplateDemoEnabled = true)
+      ...templateDemoAppRoutes,
       {
         component: () => <Redirect to="/404" />
       }
     ]
   },
-  {
-    path: '*',
-    layout: MainLayout,
-    routes: [
-      {
-        exact: true,
-        path: '/home',
-        component: HomeView
-      },
-      {
-        exact: true,
-        path: '/pricing',
-        component: lazy(() => import('src/views/pages/PricingView'))
-      },
-      {
-        component: () => <Redirect to="/404" />
-      }
-    ]
-  }
+  ...templateDocsRoutes,
+  ...templateLandingRoutes
 ];
 
 const renderRoutes = routes =>
