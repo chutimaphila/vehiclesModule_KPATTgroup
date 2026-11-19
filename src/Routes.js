@@ -47,6 +47,82 @@ const routesConfig = [
     guard: AuthGuard,
     layout: DashboardLayout,
     routes: [
+      // ==========================================
+      // ระบบตรวจเช็คยานพาหนะ (Vehicle Inspection)
+      // ==========================================
+      {
+        exact: true,
+        path: '/app/vehicles',
+        component: () => <Redirect to="/app/vehicles/dashboard" />
+      },
+      {
+        exact: true,
+        path: '/app/vehicles/dashboard',
+        component: lazy(() =>
+          import('src/modules/vehicleInspection/pages/VehicleDashboard')
+        )
+      },
+      // 1. ทะเบียนยานพาหนะ
+      {
+        exact: true,
+        path: '/app/vehicles/list',
+        component: lazy(() =>
+          import('src/modules/vehicleInspection/pages/VehicleList')
+        )
+      },
+      // 2. เช็คยานพาหนะ (หน้ารายการตรวจ & หน้าฟอร์มบันทึกผลตรวจ)
+      {
+        exact: true,
+        path: '/app/vehicles/inspections',
+        component: lazy(() =>
+          import('src/modules/vehicleInspection/pages/InspectionList')
+        )
+      },
+      {
+        exact: true,
+        path: '/app/vehicles/inspections/create',
+        component: lazy(() =>
+          import('src/modules/vehicleInspection/pages/InspectionForm')
+        )
+      },
+      {
+        exact: true,
+        path: '/app/vehicles/inspections/:inspectionId/edit',
+        component: lazy(() =>
+          import('src/modules/vehicleInspection/pages/InspectionForm')
+        )
+      },
+      // 3. รายการแก้ไข (ติดตามข้อบกพร่อง / นัดตรวจซ้ำ)
+      {
+        exact: true,
+        path: '/app/vehicles/defects',
+        component: lazy(() =>
+          import('src/modules/vehicleInspection/pages/DefectList')
+        )
+      },
+      // 4. ประวัติการตรวจเช็ค (หน้ารายการประวัติ & หน้ารายละเอียดใบตรวจ)
+      {
+        exact: true,
+        path: '/app/vehicles/history',
+        component: lazy(() =>
+          import('src/modules/vehicleInspection/pages/InspectionHistory')
+        )
+      },
+      {
+        exact: true,
+        path: '/app/vehicles/history/:inspectionId',
+        component: lazy(() =>
+          import('src/modules/vehicleInspection/pages/InspectionDetails')
+        )
+      },
+      // 5. การส่งออกเอกสาร (รายงาน PDF / Excel / ลงนามเอกสาร)
+      {
+        exact: true,
+        path: '/app/vehicles/documents',
+        component: lazy(() =>
+          import('src/modules/vehicleInspection/pages/DocumentExport')
+        )
+      },
       {
         exact: true,
         path: '/app',
@@ -227,7 +303,9 @@ const routesConfig = [
       {
         exact: true,
         path: '/app/vehicles/list',
-        component: lazy(() => import('src/modules/vehicleInspection/pages/VehicleList'))
+        component: lazy(() =>
+          import('src/modules/vehicleInspection/pages/VehicleList')
+        )
       },
       {
         component: () => <Redirect to="/404" />
